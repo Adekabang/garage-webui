@@ -25,7 +25,7 @@ const WebsiteAccessSection = () => {
   const updateMutation = useUpdateBucket(data?.id);
 
   const onChange = useDebounce((values: DeepPartial<WebsiteConfigSchema>) => {
-    const data = {
+    const websiteData = {
       enabled: values.websiteAccess,
       indexDocument: values.websiteAccess
         ? values.websiteConfig?.indexDocument
@@ -36,7 +36,11 @@ const WebsiteAccessSection = () => {
     };
 
     updateMutation.mutate({
-      websiteAccess: data,
+      websiteAccess: values.websiteAccess,
+      websiteConfig: values.websiteAccess && websiteData.indexDocument && websiteData.errorDocument ? {
+        indexDocument: websiteData.indexDocument,
+        errorDocument: websiteData.errorDocument,
+      } : null,
     });
   });
 
@@ -51,7 +55,7 @@ const WebsiteAccessSection = () => {
 
     const { unsubscribe } = form.watch((values) => onChange(values));
     return unsubscribe;
-  }, [data]);
+  }, [data, form, onChange]);
 
   return (
     <div className="mt-8">

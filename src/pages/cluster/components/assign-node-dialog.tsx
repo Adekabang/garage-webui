@@ -63,7 +63,7 @@ const AssignNodeDialog = () => {
         isGateway,
       });
     }
-  }, [data]);
+  }, [data, form]);
 
   const zoneList = useMemo(() => {
     const nodes = cluster?.nodes || cluster?.knownNodes || [];
@@ -149,7 +149,10 @@ const AssignNodeDialog = () => {
                     : null
                 }
                 options={zoneList}
-                onChange={({ value }: any) => field.onChange(value)}
+                onChange={(newValue) => {
+                  const value = newValue as { value: string } | null;
+                  field.onChange(value?.value || null);
+                }}
               />
             )}
           />
@@ -162,7 +165,7 @@ const AssignNodeDialog = () => {
                 name="isGateway"
                 render={({ field }) => (
                   <Checkbox
-                    {...(field as any)}
+                    name={field.name}
                     checked={field.value}
                     onChange={(e) => field.onChange(e.target.checked)}
                     className="mr-2"
@@ -178,13 +181,13 @@ const AssignNodeDialog = () => {
               <FormControl
                 form={form}
                 name="capacity"
-                render={(field) => <Input type="number" {...(field as any)} />}
+                render={(field) => <Input type="number" name={field.name} value={String(field.value || '')} onChange={field.onChange} />}
               />
               <FormControl
                 form={form}
                 name="capacityUnit"
                 render={(field) => (
-                  <Select {...(field as any)}>
+                  <Select name={field.name} value={String(field.value || '')} onChange={field.onChange}>
                     <option value="">Select Unit</option>
 
                     {capacityUnits.map((unit) => (

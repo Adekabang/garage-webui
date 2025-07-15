@@ -10,15 +10,15 @@ import { CreateBucketSchema } from "./schema";
 export const useBuckets = () => {
   return useQuery({
     queryKey: ["buckets"],
-    queryFn: () => api.get<GetBucketRes>("/buckets"),
+    queryFn: () => api.get<GetBucketRes>("/v2/ListBuckets"),
   });
 };
 
 export const useCreateBucket = (
-  options?: UseMutationOptions<any, Error, CreateBucketSchema>
+  options?: UseMutationOptions<unknown, Error, CreateBucketSchema>
 ) => {
   return useMutation({
-    mutationFn: (body) => api.post("/v1/bucket", { body }),
+    mutationFn: (body) => api.post("/v2/CreateBucket", { body }),
     ...options,
   });
 };
