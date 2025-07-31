@@ -1,21 +1,21 @@
-# Garage Web UI API 升级报告
+# Garage Web UI API Upgrade Report
 
-## 升级概述
+## Upgrade Overview
 
-已成功将 Garage Web UI 项目从 Garage Admin API v1 升级到 v2 版本。
+The Garage Web UI project has been successfully upgraded from Garage Admin API v1 to v2.
 
-## 升级时间
+## Upgrade Timeline
 
-- 完成时间：2024 年 12 月
-- 升级范围：前端 React hooks 中的所有 API 调用
+- **Completion Date**: December 2024
+- **Scope of Upgrade**: All API calls within the frontend React hooks
 
-## 升级详情
+## Upgrade Details
 
-### 1. Home 页面 (`src/pages/home/hooks.ts`)
+### 1. Home Page (`src/pages/home/hooks.ts`)
 
 - ✅ `useNodesHealth`: `/v1/health` → `/v2/GetClusterHealth`
 
-### 2. Cluster 页面 (`src/pages/cluster/hooks.ts`)
+### 2. Cluster Page (`src/pages/cluster/hooks.ts`)
 
 - ✅ `useClusterStatus`: `/v1/status` → `/v2/GetClusterStatus`
 - ✅ `useClusterLayout`: `/v1/layout` → `/v2/GetClusterLayout`
@@ -25,19 +25,19 @@
 - ✅ `useRevertChanges`: `/v1/layout/revert` → `/v2/RevertClusterLayout`
 - ✅ `useApplyChanges`: `/v1/layout/apply` → `/v2/ApplyClusterLayout`
 
-### 3. Keys 页面 (`src/pages/keys/hooks.ts`)
+### 3. Keys Page (`src/pages/keys/hooks.ts`)
 
 - ✅ `useKeys`: `/v1/key?list` → `/v2/ListKeys`
 - ✅ `useCreateKey`: `/v1/key` → `/v2/CreateKey`
-- ✅ `useCreateKey` (导入): `/v1/key/import` → `/v2/ImportKey`
+- ✅ `useCreateKey` (Import): `/v1/key/import` → `/v2/ImportKey`
 - ✅ `useRemoveKey`: `/v1/key` → `/v2/DeleteKey`
 
-### 4. Buckets 页面 (`src/pages/buckets/hooks.ts`)
+### 4. Buckets Page (`src/pages/buckets/hooks.ts`)
 
 - ✅ `useBuckets`: `/buckets` → `/v2/ListBuckets`
 - ✅ `useCreateBucket`: `/v1/bucket` → `/v2/CreateBucket`
 
-### 5. Bucket 管理页面 (`src/pages/buckets/manage/hooks.ts`)
+### 5. Bucket Management Page (`src/pages/buckets/manage/hooks.ts`)
 
 - ✅ `useBucket`: `/v1/bucket` → `/v2/GetBucketInfo`
 - ✅ `useUpdateBucket`: `/v1/bucket` → `/v2/UpdateBucket`
@@ -47,11 +47,11 @@
 - ✅ `useDenyKey`: `/v1/bucket/deny` → `/v2/DenyBucketKey`
 - ✅ `useRemoveBucket`: `/v1/bucket` → `/v2/DeleteBucket`
 
-## 升级统计
+## Upgrade Statistics
 
-### API 端点映射
+### API Endpoint Mapping
 
-| 原 v1 端点                         | 新 v2 端点                    | 状态 |
+| Original v1 Endpoint                         | New v2 Endpoint                    | Status |
 | ---------------------------------- | ----------------------------- | ---- |
 | `/v1/health`                       | `/v2/GetClusterHealth`        | ✅   |
 | `/v1/status`                       | `/v2/GetClusterStatus`        | ✅   |
@@ -74,84 +74,84 @@
 | `/v1/bucket/allow`                 | `/v2/AllowBucketKey`          | ✅   |
 | `/v1/bucket/deny`                  | `/v2/DenyBucketKey`           | ✅   |
 
-### 升级数量
+### Upgrade Count
 
-- **总计升级端点**: 18 个
-- **成功升级**: 18 个 (100%)
-- **升级文件数**: 5 个 TypeScript hook 文件
+- **Total Endpoints Upgraded**: 18
+- **Successfully Upgraded**: 18 (100%)
+- **Number of Files Upgraded**: 5 TypeScript hook files
 
-## 后端兼容性
+## Backend Compatibility
 
-✅ **后端无需修改**：
+✅ **No Backend Modifications Required**:
 
-- 后端使用反向代理 (`ProxyHandler`) 直接转发 API 请求到 Garage Admin API
-- 所有 v2 API 请求会自动转发到正确的 Garage Admin 端点
-- 无需修改 Go 后端代码
+- The backend uses a reverse proxy (`ProxyHandler`) to directly forward API requests to the Garage Admin API.
+- All v2 API requests are automatically forwarded to the correct Garage Admin endpoints.
+- No changes to the Go backend code were necessary.
 
-## 编译验证
+## Build Verification
 
-✅ **编译成功**：
+✅ **Build Successful**:
 
-- TypeScript 编译通过
-- Vite 打包成功
-- 无编译错误
+- TypeScript compilation passed.
+- Vite bundling was successful.
+- No compilation errors.
 
-⚠️ **代码质量警告**：
+⚠️ **Code Quality Warnings**:
 
-- 存在 ESLint `any` 类型警告（不影响功能）
-- 建议后续优化类型定义
+- ESLint `any` type warnings are present (do not affect functionality).
+- It is recommended to optimize type definitions in the future.
 
-## 新功能可用性
+## New Feature Availability
 
-升级到 v2 API 后，项目现在可以使用以下新功能：
+After upgrading to the v2 API, the project can now use the following new features:
 
-### 集群管理增强
+### Enhanced Cluster Management
 
-- 更详细的集群健康状态信息
-- 改进的布局管理操作
-- 更好的节点连接处理
+- More detailed cluster health status information
+- Improved layout management operations
+- Better node connection handling
 
-### 密钥管理增强
+### Enhanced Key Management
 
-- 支持更多密钥类型
-- 改进的权限管理
-- 更好的密钥导入导出
+- Support for more key types
+- Improved permission management
+- Better key import/export functionality
 
-### 存储桶管理增强
+### Enhanced Bucket Management
 
-- 更丰富的存储桶元数据
-- 改进的别名管理
-- 更精细的权限控制
+- Richer bucket metadata
+- Improved alias management
+- Finer-grained permission control
 
-## 下一步建议
+## Next Step Recommendations
 
-1. **类型定义优化**: 将 `any` 类型替换为具体的接口定义
-2. **功能测试**: 在开发环境中测试所有升级的功能
-3. **文档更新**: 更新项目文档以反映 v2 API 的使用
-4. **错误处理**: 根据 v2 API 的响应格式调整错误处理逻辑
+1. **Type Definition Optimization**: Replace `any` types with specific interface definitions.
+2. **Functional Testing**: Test all upgraded features in a development environment.
+3. **Documentation Update**: Update project documentation to reflect the use of the v2 API.
+4. **Error Handling**: Adjust error handling logic based on the v2 API's response format.
 
-## 风险评估
+## Risk Assessment
 
-### 低风险
+### Low Risk
 
-- API 路径升级成功
-- 编译无错误
-- 后端兼容性良好
+- API path upgrade was successful.
+- No compilation errors.
+- Good backend compatibility.
 
-### 需要测试的功能
+### Features Requiring Testing
 
-- 所有升级的 API 端点的实际调用
-- 错误响应的处理
-- 新 API 参数格式的兼容性
+- Actual calls to all upgraded API endpoints.
+- Handling of error responses.
+- Compatibility of new API parameter formats.
 
-## 回滚计划
+## Rollback Plan
 
-如需回滚到 v1 API：
+To roll back to the v1 API if necessary:
 
-1. 恢复所有 hook 文件中的 API 路径
-2. 确保 Garage 服务器支持 v1 API
-3. 重新编译和部署
+1. Restore the API paths in all hook files.
+2. Ensure the Garage server supports the v1 API.
+3. Recompile and redeploy.
 
 ---
 
-**升级完成**: Garage Web UI 现已成功升级到 Garage Admin API v2，具备更强的功能和更好的性能。
+**Upgrade Complete**: The Garage Web UI has now been successfully upgraded to Garage Admin API v2, providing enhanced functionality and better performance.

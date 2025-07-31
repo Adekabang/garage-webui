@@ -1,34 +1,34 @@
-# Garage Admin API 文档
+# Garage Admin API Documentation
 
-## 概述
+## Overview
 
-Garage Administration API 是一个用于编程式管理 Garage 集群的 REST API，提供了完整的集群管理、存储桶管理、访问控制等功能。当前版本为 v2，API 基础地址通常为 `http://localhost:3903`。
+The Garage Administration API is a REST API for programmatically managing a Garage cluster, providing complete functionality for cluster management, bucket management, access control, and more. The current version is v2, and the base API address is typically `http://localhost:3903`.
 
-## 认证方式
+## Authentication
 
-### Bearer Token 认证
+### Bearer Token Authentication
 
-所有 API 请求都需要在 HTTP 头中包含认证信息：
+All API requests must include authentication information in the HTTP header:
 
 ```http
 Authorization: Bearer <token>
 ```
 
-### Token 类型
+### Token Types
 
-1. **用户定义 Token**（推荐）
+1. **User-defined Token** (Recommended)
 
-   - 可动态创建和管理
-   - 支持作用域限制
-   - 支持过期时间设置
-   - 使用 `garage admin-token` 命令创建
+   - Can be dynamically created and managed
+   - Supports scope limitations
+   - Supports setting an expiration time
+   - Created using the `garage admin-token` command
 
-2. **主 Token**（已废弃）
-   - 在配置文件中指定
-   - `admin_token`: 管理端点访问
-   - `metrics_token`: 指标端点访问
+2. **Master Token** (Deprecated)
+   - Specified in the configuration file
+   - `admin_token`: For admin endpoint access
+   - `metrics_token`: For metrics endpoint access
 
-### 创建用户定义 Token 示例
+### Example of Creating a User-defined Token
 
 ```bash
 garage admin-token create --expires-in 30d \
@@ -36,15 +36,15 @@ garage admin-token create --expires-in 30d \
     my-token
 ```
 
-## API 端点分类
+## API Endpoint Categories
 
-### 1. 集群管理 (Cluster)
+### 1. Cluster Management
 
-#### 获取集群健康状态
+#### Get Cluster Health
 
-- **端点**: `GET /v2/GetClusterHealth`
-- **描述**: 返回集群全局状态，包括连接节点数、健康存储节点数、分区状态等
-- **响应示例**:
+- **Endpoint**: `GET /v2/GetClusterHealth`
+- **Description**: Returns the global status of the cluster, including the number of connected nodes, healthy storage nodes, partition status, etc.
+- **Response Example**:
 
 ```json
 {
@@ -59,34 +59,34 @@ garage admin-token create --expires-in 30d \
 }
 ```
 
-#### 获取集群状态
+#### Get Cluster Status
 
-- **端点**: `GET /v2/GetClusterStatus`
-- **描述**: 返回详细的集群状态信息，包括节点信息和布局配置
+- **Endpoint**: `GET /v2/GetClusterStatus`
+- **Description**: Returns detailed cluster status information, including node information and layout configuration.
 
-#### 获取集群统计
+#### Get Cluster Statistics
 
-- **端点**: `GET /v2/GetClusterStatistics`
-- **描述**: 获取集群级别的统计数据
+- **Endpoint**: `GET /v2/GetClusterStatistics`
+- **Description**: Gets cluster-level statistics.
 
-#### 连接集群节点
+#### Connect Cluster Nodes
 
-- **端点**: `POST /v2/ConnectClusterNodes`
-- **描述**: 指示当前节点连接到其他 Garage 节点
-- **请求体**: 节点地址数组 `["<node_id>@<net_address>"]`
+- **Endpoint**: `POST /v2/ConnectClusterNodes`
+- **Description**: Instructs the current node to connect to other Garage nodes.
+- **Request Body**: An array of node addresses `["<node_id>@<net_address>"]`
 
-### 2. 集群布局管理 (Cluster Layout)
+### 2. Cluster Layout Management
 
-#### 获取集群布局
+#### Get Cluster Layout
 
-- **端点**: `GET /v2/GetClusterLayout`
-- **描述**: 返回当前集群布局配置和待处理的变更
+- **Endpoint**: `GET /v2/GetClusterLayout`
+- **Description**: Returns the current cluster layout configuration and pending changes.
 
-#### 更新集群布局
+#### Update Cluster Layout
 
-- **端点**: `POST /v2/UpdateClusterLayout`
-- **描述**: 提交集群布局变更到暂存区
-- **请求体示例**:
+- **Endpoint**: `POST /v2/UpdateClusterLayout`
+- **Description**: Submits cluster layout changes to the staging area.
+- **Request Body Example**:
 
 ```json
 {
@@ -101,47 +101,47 @@ garage admin-token create --expires-in 30d \
 }
 ```
 
-#### 应用布局变更
+#### Apply Layout Changes
 
-- **端点**: `POST /v2/ApplyClusterLayout`
-- **描述**: 将暂存的布局变更应用到集群
-- **请求体**: `{"version": <layout_version>}`
+- **Endpoint**: `POST /v2/ApplyClusterLayout`
+- **Description**: Applies staged layout changes to the cluster.
+- **Request Body**: `{"version": <layout_version>}`
 
-#### 预览布局变更
+#### Preview Layout Changes
 
-- **端点**: `POST /v2/PreviewClusterLayoutChanges`
-- **描述**: 预览布局变更的影响，不实际应用
+- **Endpoint**: `POST /v2/PreviewClusterLayoutChanges`
+- **Description**: Previews the impact of layout changes without actually applying them.
 
-#### 回滚布局变更
+#### Revert Layout Changes
 
-- **端点**: `POST /v2/RevertClusterLayout`
-- **描述**: 清除所有暂存的布局变更
+- **Endpoint**: `POST /v2/RevertClusterLayout`
+- **Description**: Clears all staged layout changes.
 
-#### 获取布局历史
+#### Get Layout History
 
-- **端点**: `GET /v2/GetClusterLayoutHistory`
-- **描述**: 获取集群布局的历史版本信息
+- **Endpoint**: `GET /v2/GetClusterLayoutHistory`
+- **Description**: Gets the history of cluster layout versions.
 
-### 3. 存储桶管理 (Bucket)
+### 3. Bucket Management
 
-#### 列出所有存储桶
+#### List All Buckets
 
-- **端点**: `GET /v2/ListBuckets`
-- **描述**: 返回集群中所有存储桶及其别名
+- **Endpoint**: `GET /v2/ListBuckets`
+- **Description**: Returns all buckets and their aliases in the cluster.
 
-#### 获取存储桶信息
+#### Get Bucket Information
 
-- **端点**: `GET /v2/GetBucketInfo`
-- **参数**:
-  - `id`: 存储桶 ID
-  - `globalAlias`: 全局别名
-  - `search`: 搜索模式
-- **描述**: 获取存储桶详细信息，包括权限、统计、配额等
+- **Endpoint**: `GET /v2/GetBucketInfo`
+- **Parameters**:
+  - `id`: Bucket ID
+  - `globalAlias`: Global alias
+  - `search`: Search pattern
+- **Description**: Gets detailed bucket information, including permissions, statistics, quotas, etc.
 
-#### 创建存储桶
+#### Create Bucket
 
-- **端点**: `POST /v2/CreateBucket`
-- **请求体示例**:
+- **Endpoint**: `POST /v2/CreateBucket`
+- **Request Body Example**:
 
 ```json
 {
@@ -158,11 +158,11 @@ garage admin-token create --expires-in 30d \
 }
 ```
 
-#### 更新存储桶
+#### Update Bucket
 
-- **端点**: `POST /v2/UpdateBucket/{id}`
-- **描述**: 更新存储桶的网站配置和配额设置
-- **请求体示例**:
+- **Endpoint**: `POST /v2/UpdateBucket/{id}`
+- **Description**: Updates a bucket's website configuration and quota settings.
+- **Request Body Example**:
 
 ```json
 {
@@ -178,53 +178,53 @@ garage admin-token create --expires-in 30d \
 }
 ```
 
-#### 删除存储桶
+#### Delete Bucket
 
-- **端点**: `POST /v2/DeleteBucket/{id}`
-- **描述**: 删除空存储桶（会删除所有关联别名）
+- **Endpoint**: `POST /v2/DeleteBucket/{id}`
+- **Description**: Deletes an empty bucket (this will delete all associated aliases).
 
-#### 清理未完成上传
+#### Cleanup Incomplete Uploads
 
-- **端点**: `POST /v2/CleanupIncompleteUploads`
-- **请求体**: `{"bucketId": "bucket-id", "olderThanSecs": 86400}`
+- **Endpoint**: `POST /v2/CleanupIncompleteUploads`
+- **Request Body**: `{"bucketId": "bucket-id", "olderThanSecs": 86400}`
 
-#### 检查对象
+#### Inspect Object
 
-- **端点**: `GET /v2/InspectObject`
-- **参数**: `bucketId`, `key`
-- **描述**: 获取对象的详细内部状态信息
+- **Endpoint**: `GET /v2/InspectObject`
+- **Parameters**: `bucketId`, `key`
+- **Description**: Gets detailed internal status information for an object.
 
-### 4. 存储桶别名管理 (Bucket Alias)
+### 4. Bucket Alias Management
 
-#### 添加存储桶别名
+#### Add Bucket Alias
 
-- **端点**: `POST /v2/AddBucketAlias`
-- **描述**: 为存储桶添加全局或本地别名
+- **Endpoint**: `POST /v2/AddBucketAlias`
+- **Description**: Adds a global or local alias for a bucket.
 
-#### 移除存储桶别名
+#### Remove Bucket Alias
 
-- **端点**: `POST /v2/RemoveBucketAlias`
-- **描述**: 移除存储桶的别名
+- **Endpoint**: `POST /v2/RemoveBucketAlias`
+- **Description**: Removes a bucket's alias.
 
-### 5. 访问密钥管理 (Access Key)
+### 5. Access Key Management
 
-#### 列出访问密钥
+#### List Access Keys
 
-- **端点**: `GET /v2/ListKeys`
-- **描述**: 返回所有 API 访问密钥
+- **Endpoint**: `GET /v2/ListKeys`
+- **Description**: Returns all API access keys.
 
-#### 获取密钥信息
+#### Get Key Information
 
-- **端点**: `GET /v2/GetKeyInfo`
-- **参数**:
-  - `id`: 密钥 ID
-  - `search`: 搜索模式
-  - `showSecretKey`: 是否返回密钥（默认不返回）
+- **Endpoint**: `GET /v2/GetKeyInfo`
+- **Parameters**:
+  - `id`: Key ID
+  - `search`: Search pattern
+  - `showSecretKey`: Whether to return the secret key (default is false).
 
-#### 创建访问密钥
+#### Create Access Key
 
-- **端点**: `POST /v2/CreateKey`
-- **请求体示例**:
+- **Endpoint**: `POST /v2/CreateKey`
+- **Request Body Example**:
 
 ```json
 {
@@ -235,28 +235,28 @@ garage admin-token create --expires-in 30d \
 }
 ```
 
-#### 更新访问密钥
+#### Update Access Key
 
-- **端点**: `POST /v2/UpdateKey/{id}`
-- **描述**: 更新密钥的名称、权限和过期时间
+- **Endpoint**: `POST /v2/UpdateKey/{id}`
+- **Description**: Updates a key's name, permissions, and expiration time.
 
-#### 删除访问密钥
+#### Delete Access Key
 
-- **端点**: `POST /v2/DeleteKey/{id}`
-- **描述**: 从集群中删除访问密钥
+- **Endpoint**: `POST /v2/DeleteKey/{id}`
+- **Description**: Deletes an access key from the cluster.
 
-#### 导入访问密钥
+#### Import Access Key
 
-- **端点**: `POST /v2/ImportKey`
-- **描述**: 导入已有的访问密钥（仅用于迁移和备份恢复）
+- **Endpoint**: `POST /v2/ImportKey`
+- **Description**: Imports an existing access key (only for migration and backup recovery).
 
-### 6. 权限管理 (Permission)
+### 6. Permission Management
 
-#### 授予权限
+#### Grant Permission
 
-- **端点**: `POST /v2/AllowBucketKey`
-- **描述**: 授予密钥对存储桶的操作权限
-- **请求体示例**:
+- **Endpoint**: `POST /v2/AllowBucketKey`
+- **Description**: Grants a key permission to perform operations on a bucket.
+- **Request Body Example**:
 
 ```json
 {
@@ -270,30 +270,30 @@ garage admin-token create --expires-in 30d \
 }
 ```
 
-#### 拒绝权限
+#### Deny Permission
 
-- **端点**: `POST /v2/DenyBucketKey`
-- **描述**: 移除密钥对存储桶的操作权限
+- **Endpoint**: `POST /v2/DenyBucketKey`
+- **Description**: Removes a key's permission to perform operations on a bucket.
 
-### 7. 管理员 Token 管理 (Admin API Token)
+### 7. Admin API Token Management
 
-#### 列出管理员 Token
+#### List Admin Tokens
 
-- **端点**: `GET /v2/ListAdminTokens`
+- **Endpoint**: `GET /v2/ListAdminTokens`
 
-#### 获取 Token 信息
+#### Get Token Information
 
-- **端点**: `GET /v2/GetAdminTokenInfo`
-- **参数**: `id` 或 `search`
+- **Endpoint**: `GET /v2/GetAdminTokenInfo`
+- **Parameters**: `id` or `search`
 
-#### 获取当前 Token 信息
+#### Get Current Token Information
 
-- **端点**: `GET /v2/GetCurrentAdminTokenInfo`
+- **Endpoint**: `GET /v2/GetCurrentAdminTokenInfo`
 
-#### 创建管理员 Token
+#### Create Admin Token
 
-- **端点**: `POST /v2/CreateAdminToken`
-- **请求体示例**:
+- **Endpoint**: `POST /v2/CreateAdminToken`
+- **Request Body Example**:
 
 ```json
 {
@@ -303,140 +303,140 @@ garage admin-token create --expires-in 30d \
 }
 ```
 
-#### 更新管理员 Token
+#### Update Admin Token
 
-- **端点**: `POST /v2/UpdateAdminToken/{id}`
+- **Endpoint**: `POST /v2/UpdateAdminToken/{id}`
 
-#### 删除管理员 Token
+#### Delete Admin Token
 
-- **端点**: `POST /v2/DeleteAdminToken/{id}`
+- **Endpoint**: `POST /v2/DeleteAdminToken/{id}`
 
-### 8. 节点管理 (Node)
+### 8. Node Management
 
-#### 获取节点信息
+#### Get Node Information
 
-- **端点**: `GET /v2/GetNodeInfo/{node}`
-- **参数**: `node` - 节点 ID、`*`（所有节点）或 `self`（当前节点）
+- **Endpoint**: `GET /v2/GetNodeInfo/{node}`
+- **Parameters**: `node` - Node ID, `*` (all nodes), or `self` (current node)
 
-#### 获取节点统计
+#### Get Node Statistics
 
-- **端点**: `GET /v2/GetNodeStatistics/{node}`
+- **Endpoint**: `GET /v2/GetNodeStatistics/{node}`
 
-#### 创建元数据快照
+#### Create Metadata Snapshot
 
-- **端点**: `POST /v2/CreateMetadataSnapshot/{node}`
+- **Endpoint**: `POST /v2/CreateMetadataSnapshot/{node}`
 
-#### 启动修复操作
+#### Launch Repair Operation
 
-- **端点**: `POST /v2/LaunchRepairOperation/{node}`
-- **修复类型**: `tables`, `blocks`, `versions`, `multipartUploads`, `blockRefs`, `blockRc`, `rebalance`, `aliases`
+- **Endpoint**: `POST /v2/LaunchRepairOperation/{node}`
+- **Repair Types**: `tables`, `blocks`, `versions`, `multipartUploads`, `blockRefs`, `blockRc`, `rebalance`, `aliases`
 
-### 9. 后台工作进程管理 (Worker)
+### 9. Worker Process Management
 
-#### 列出工作进程
+#### List Workers
 
-- **端点**: `POST /v2/ListWorkers/{node}`
+- **Endpoint**: `POST /v2/ListWorkers/{node}`
 
-#### 获取工作进程信息
+#### Get Worker Information
 
-- **端点**: `POST /v2/GetWorkerInfo/{node}`
+- **Endpoint**: `POST /v2/GetWorkerInfo/{node}`
 
-#### 获取工作进程变量
+#### Get Worker Variable
 
-- **端点**: `POST /v2/GetWorkerVariable/{node}`
+- **Endpoint**: `POST /v2/GetWorkerVariable/{node}`
 
-#### 设置工作进程变量
+#### Set Worker Variable
 
-- **端点**: `POST /v2/SetWorkerVariable/{node}`
+- **Endpoint**: `POST /v2/SetWorkerVariable/{node}`
 
-### 10. 数据块管理 (Block)
+### 10. Block Management
 
-#### 获取数据块信息
+#### Get Block Information
 
-- **端点**: `POST /v2/GetBlockInfo/{node}`
-- **请求体**: `{"blockHash": "hash-value"}`
+- **Endpoint**: `POST /v2/GetBlockInfo/{node}`
+- **Request Body**: `{"blockHash": "hash-value"}`
 
-#### 列出错误数据块
+#### List Block Errors
 
-- **端点**: `GET /v2/ListBlockErrors/{node}`
+- **Endpoint**: `GET /v2/ListBlockErrors/{node}`
 
-#### 重试数据块同步
+#### Retry Block Resync
 
-- **端点**: `POST /v2/RetryBlockResync/{node}`
+- **Endpoint**: `POST /v2/RetryBlockResync/{node}`
 
-#### 清除数据块
+#### Purge Blocks
 
-- **端点**: `POST /v2/PurgeBlocks/{node}`
-- **警告**: 此操作会永久删除引用这些数据块的所有对象
+- **Endpoint**: `POST /v2/PurgeBlocks/{node}`
+- **Warning**: This operation permanently deletes all objects that reference these blocks.
 
-### 11. 特殊端点 (Special Endpoints)
+### 11. Special Endpoints
 
-#### 健康检查
+#### Health Check
 
-- **端点**: `GET /health`
-- **认证**: 无需认证
-- **描述**: 快速健康检查，返回 200 表示服务可用
+- **Endpoint**: `GET /health`
+- **Authentication**: None required
+- **Description**: Quick health check, returns 200 if the service is available.
 
-#### Prometheus 指标
+#### Prometheus Metrics
 
-- **端点**: `GET /metrics`
-- **认证**: 可选（使用 metrics_token）
-- **描述**: 返回 Prometheus 格式的监控指标
+- **Endpoint**: `GET /metrics`
+- **Authentication**: Optional (using `metrics_token`)
+- **Description**: Returns monitoring metrics in Prometheus format.
 
-#### 按需 TLS 检查
+#### On-Demand TLS Check
 
-- **端点**: `GET /check?domain=<domain>`
-- **认证**: 无需认证
-- **描述**: 用于反向代理（如 Caddy）的按需 TLS 证书验证
+- **Endpoint**: `GET /check?domain=<domain>`
+- **Authentication**: None required
+- **Description**: Used for on-demand TLS certificate validation by reverse proxies (like Caddy).
 
-## 使用示例
+## Usage Example
 
-### 使用 curl
+### Using curl
 
 ```bash
-# 获取集群健康状态
+# Get cluster health status
 curl -H 'Authorization: Bearer YOUR_TOKEN' \
      http://localhost:3903/v2/GetClusterHealth
 
-# 创建存储桶
+# Create a bucket
 curl -X POST \
      -H 'Authorization: Bearer YOUR_TOKEN' \
      -H 'Content-Type: application/json' \
      -d '{"globalAlias": "my-bucket"}' \
      http://localhost:3903/v2/CreateBucket
 
-# 列出所有存储桶
+# List all buckets
 curl -H 'Authorization: Bearer YOUR_TOKEN' \
      http://localhost:3903/v2/ListBuckets
 ```
 
-### 使用 Garage CLI
+### Using the Garage CLI
 
 ```bash
-# 通过内部 RPC 调用（无需认证）
+# Call via internal RPC (no authentication required)
 garage json-api GetClusterHealth
 
-# 带参数的调用
+# Call with parameters
 garage json-api GetBucketInfo '{"globalAlias": "my-bucket"}'
 
-# 从标准输入读取参数
+# Read parameters from standard input
 garage json-api CreateBucket -
 {"globalAlias": "test-bucket"}
 <EOF>
 ```
 
-## 错误处理
+## Error Handling
 
-API 使用标准 HTTP 状态码：
+The API uses standard HTTP status codes:
 
-- `200 OK` - 请求成功
-- `400 Bad Request` - 请求参数错误
-- `401 Unauthorized` - 认证失败
-- `403 Forbidden` - 权限不足
-- `404 Not Found` - 资源不存在
-- `500 Internal Server Error` - 服务器内部错误
+- `200 OK` - Request successful
+- `400 Bad Request` - Invalid request parameters
+- `401 Unauthorized` - Authentication failed
+- `403 Forbidden` - Insufficient permissions
+- `404 Not Found` - Resource not found
+- `500 Internal Server Error` - Internal server error
 
-错误响应通常包含详细的错误信息：
+Error responses typically include detailed error information:
 
 ```json
 {
@@ -445,38 +445,38 @@ API 使用标准 HTTP 状态码：
 }
 ```
 
-## 权限作用域
+## Permission Scopes
 
-管理员 Token 可以限制访问特定的 API 端点：
+Admin tokens can be restricted to specific API endpoints:
 
-- `*` - 允许所有端点
-- `ListBuckets` - 列出存储桶
-- `GetBucketInfo` - 获取存储桶信息
-- `CreateBucket` - 创建存储桶
-- `ListKeys` - 列出访问密钥
-- `CreateKey` - 创建访问密钥
-- `AllowBucketKey` - 授予权限
-- `DenyBucketKey` - 拒绝权限
-- `Metrics` - 访问指标端点
+- `*` - Allows all endpoints
+- `ListBuckets` - List buckets
+- `GetBucketInfo` - Get bucket information
+- `CreateBucket` - Create a bucket
+- `ListKeys` - List access keys
+- `CreateKey` - Create an access key
+- `AllowBucketKey` - Grant permissions
+- `DenyBucketKey` - Deny permissions
+- `Metrics` - Access the metrics endpoint
 
-## 最佳实践
+## Best Practices
 
-1. **使用用户定义 Token**：避免使用配置文件中的主 Token
-2. **设置适当的作用域**：只授予必要的权限
-3. **设置过期时间**：定期轮换 Token
-4. **监控 API 使用**：通过 `/metrics` 端点监控 API 调用
-5. **错误处理**：妥善处理各种错误情况
-6. **批量操作**：对于大量操作，考虑使用批量 API 或脚本
+1. **Use User-defined Tokens**: Avoid using the master token from the configuration file.
+2. **Set Appropriate Scopes**: Grant only necessary permissions.
+3. **Set Expiration Times**: Rotate tokens periodically.
+4. **Monitor API Usage**: Monitor API calls via the `/metrics` endpoint.
+5. **Handle Errors**: Properly handle various error conditions.
+6. **Bulk Operations**: For a large number of operations, consider using bulk APIs or scripts.
 
-## 版本历史
+## Version History
 
-- **v0** - Garage v0.7.2 首次引入（已废弃）
-- **v1** - Garage v0.9.0 引入（已废弃）
-- **v2** - Garage v2.0.0 引入（当前版本）
+- **v0** - First introduced in Garage v0.7.2 (deprecated)
+- **v1** - Introduced in Garage v0.9.0 (deprecated)
+- **v2** - Introduced in Garage v2.0.0 (current version)
 
-## 相关链接
+## Related Links
 
-- [Garage 官方文档](https://garagehq.deuxfleurs.fr/documentation/)
-- [OpenAPI 规范 (HTML)](https://garagehq.deuxfleurs.fr/api/garage-admin-v2.html)
-- [OpenAPI 规范 (JSON)](https://garagehq.deuxfleurs.fr/api/garage-admin-v2.json)
-- [Garage 源代码](https://git.deuxfleurs.fr/Deuxfleurs/garage)
+- [Garage Official Documentation](https://garagehq.deuxfleurs.fr/documentation/)
+- [OpenAPI Specification (HTML)](https://garagehq.deuxfleurs.fr/api/garage-admin-v2.html)
+- [OpenAPI Specification (JSON)](https://garagehq.deuxfleurs.fr/api/garage-admin-v2.json)
+- [Garage Source Code](https://git.deuxfleurs.fr/Deuxfleurs/garage)
