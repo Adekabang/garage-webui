@@ -24,7 +24,7 @@ const KeysPage = () => {
 
   const fetchSecretKey = useCallback(async (id: string) => {
     try {
-      const result = await api.get<{ secretAccessKey: string }>("/v1/key", {
+      const result = await api.get<{ secretAccessKey: string }>("/v2/GetKeyInfo", {
         params: { id, showSecretKey: "true" },
       });
       if (!result?.secretAccessKey) {
