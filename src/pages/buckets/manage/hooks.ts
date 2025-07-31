@@ -5,7 +5,7 @@ import {
   UseMutationOptions,
   useQuery,
 } from "@tanstack/react-query";
-import { Bucket, Permissions } from "../types";
+import { Bucket, Permissions, UpdateBucket } from "../types";
 
 export const useBucket = (id?: string | null) => {
   return useQuery({
@@ -17,8 +17,11 @@ export const useBucket = (id?: string | null) => {
 
 export const useUpdateBucket = (id?: string | null) => {
   return useMutation({
-    mutationFn: (values: Partial<Bucket>) => {
-      return api.put<Bucket>("/v2/UpdateBucket", { params: { id }, body: values });
+    mutationFn: (values: Partial<UpdateBucket>) => {
+      return api.post<Bucket>("/v2/UpdateBucket", {
+        params: { id },
+        body: values,
+      });
     },
   });
 };
