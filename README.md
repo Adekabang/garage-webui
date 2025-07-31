@@ -186,6 +186,37 @@ $ cd garage-webui && pnpm install
 $ cd backend && pnpm install && cd ..
 ```
 
+### Development with Docker
+
+For development with Docker, a `docker-compose.dev.yml` file is provided with 4 Garage instances:
+
+```sh
+# Create necessary directories for Garage data
+$ mkdir -p dev.local/data-garage/meta dev.local/data-garage/data
+$ mkdir -p dev.local/data-garage2/meta dev.local/data-garage2/data
+$ mkdir -p dev.local/data-garage3/meta dev.local/data-garage3/data
+$ mkdir -p dev.local/data-garage4/meta dev.local/data-garage4/data
+
+# Copy the template configuration files and replace CONTAINER_NAME with the actual container name
+$ cp garage.toml.template dev.local/garage.toml && sed -i 's/CONTAINER_NAME/garage/g' dev.local/garage.toml
+$ cp garage.toml.template dev.local/garage2.toml && sed -i 's/CONTAINER_NAME/garage2/g' dev.local/garage2.toml
+$ cp garage.toml.template dev.local/garage3.toml && sed -i 's/CONTAINER_NAME/garage3/g' dev.local/garage3.toml
+$ cp garage.toml.template dev.local/garage4.toml && sed -i 's/CONTAINER_NAME/garage4/g' dev.local/garage4.toml
+
+# Setup environment variables
+$ cp .env.example .env
+$ cp backend/.env.example backend/.env
+
+# Start the Garage containers
+$ docker-compose -f docker-compose.dev.yml up -d
+```
+
+You can then run the web UI with the environment variables from your .env files:
+
+```sh
+$ pnpm run dev
+```
+
 ### Running
 
 Start both the client and server concurrently:
