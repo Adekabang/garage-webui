@@ -4,13 +4,21 @@ import {
   UseMutationOptions,
   useQuery,
 } from "@tanstack/react-query";
-import { GetBucketRes } from "./types";
+import { GetBucketRes, Bucket } from "./types";
 import { CreateBucketSchema } from "./schema";
 
 export const useBuckets = () => {
   return useQuery({
     queryKey: ["buckets"],
     queryFn: () => api.get<GetBucketRes>("/v2/ListBuckets"),
+  });
+};
+
+export const useBucketDetails = (id?: string | null) => {
+  return useQuery({
+    queryKey: ["bucket-details", id],
+    queryFn: () => api.get<Bucket>("/v2/GetBucketInfo", { params: { id } }),
+    enabled: !!id,
   });
 };
 
