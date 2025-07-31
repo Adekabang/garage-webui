@@ -347,187 +347,194 @@ pnpm run dev
    - Follow the principle of least privilege
    - Use a dedicated administrator token
 
-## Future Plans
-
-### 🚀 Feature Roadmap
-
-- **Advanced Monitoring**: Integrate more performance metrics and alerting features
-- **Bulk Operations**: Support bulk management of buckets and access keys
-- **API Expansion**: Support more Garage Admin API features
-- **Internationalization**: Multi-language support
-- **Theming System**: Customizable UI themes
-
-### 🔧 Technical Improvements
-
-- **Cache Optimization**: Smarter caching strategies
-- **Real-time Updates**: WebSocket support for real-time status updates
-- **Mobile Optimization**: Improve the mobile experience
-- **Performance Enhancements**: Frontend bundle optimization and lazy loading
-
 ## Garage Admin API Usage
 
 ### 🔌 API Features Currently Used by the Project
 
-Based on code analysis, the current Garage Web UI project calls the following Garage Admin API v1 features:
+The current Garage Web UI project utilizes **Garage Admin API v2** features along with custom backend endpoints for enhanced functionality:
+
+**⚠️ Implementation Note**: This project may use different HTTP methods than the official Garage Admin API v2 specification for better REST compliance. The implementation documented here reflects the actual working code in production. For the official API specification, refer to [https://garagehq.deuxfleurs.fr/api/garage-admin-v2.html](https://garagehq.deuxfleurs.fr/api/garage-admin-v2.html).
 
 #### 1. Cluster Management API
 
-- **`GET /v1/health`** - Get cluster health status
+- **`GET /v2/GetClusterHealth`** - Get cluster health status
 
   - Used on the home dashboard to display cluster status
   - Monitors the number of connected nodes, storage node status, and partition health
 
-- **`GET /v1/status`** - Get detailed cluster status
+- **`GET /v2/GetClusterStatus`** - Get detailed cluster status
   - Used on the cluster management page to display node details
   - Shows cluster topology and node configuration information
 
 #### 2. Cluster Layout Management API
 
-- **`GET /v1/layout`** - Get cluster layout configuration
+- **`GET /v2/GetClusterLayout`** - Get cluster layout configuration
 
   - Displays the current cluster layout and staged changes
   - Views node roles, capacity, and zone assignments
 
-- **`POST /v1/layout`** - Update cluster layout
+- **`POST /v2/UpdateClusterLayout`** - Update cluster layout
 
   - Adds new nodes to the cluster
   - Modifies node configuration (capacity, zone, tags)
   - Removes nodes (by setting `remove: true`)
 
-- **`POST /v1/connect`** - Connect cluster nodes
+- **`POST /v2/ConnectClusterNodes`** - Connect cluster nodes
 
   - Connects new nodes to the cluster
   - Establishes RPC connections between nodes
 
-- **`POST /v1/layout/apply`** - Apply layout changes
+- **`POST /v2/ApplyClusterLayout`** - Apply layout changes
 
   - Applies staged layout changes to the cluster
   - Triggers data redistribution
 
-- **`POST /v1/layout/revert`** - Revert layout changes
+- **`POST /v2/RevertClusterLayout`** - Revert layout changes
   - Clears staged layout changes
   - Restores to the last stable state
 
 #### 3. Bucket Management API
 
-- **`GET /v1/bucket?list`** - List all buckets
+- **`GET /v2/ListBuckets`** - List all buckets
 
   - Gets a list of all buckets in the cluster
   - Displays basic bucket information and aliases
 
-- **`GET /v1/bucket?id={id}`** - Get detailed bucket information
+- **`GET /v2/GetBucketInfo`** - Get detailed bucket information
 
   - Views the complete configuration of a single bucket
   - Includes permissions, statistics, quota information, etc.
 
-- **`POST /v1/bucket`** - Create a new bucket
+- **`POST /v2/CreateBucket`** - Create a new bucket
 
   - Supports setting global and local aliases
   - Configures initial permissions and parameters
 
-- **`PUT /v1/bucket?id={id}`** - Update bucket configuration
+- **`POST /v2/UpdateBucket`** - Update bucket configuration
 
   - Modifies the bucket's website configuration
   - Sets or updates quota limits
 
-- **`DELETE /v1/bucket?id={id}`** - Delete a bucket
-  - Deletes an empty bucket (the bucket must be empty)
+- **`DELETE /v2/DeleteBucket`** - Delete a bucket
+  - Deletes an empty bucket (uses DELETE method with query parameters)
+  - Implementation may differ from official POST specification for better REST compliance
 
 #### 4. Bucket Alias Management API
 
-- **`PUT /v1/bucket/alias/global`** - Add a global alias
+- **`PUT /v2/PutBucketGlobalAlias`** - Add a global alias
 
   - Creates a global access alias for a bucket
   - Supports multiple aliases pointing to the same bucket
 
-- **`DELETE /v1/bucket/alias/global`** - Delete a global alias
+- **`DELETE /v2/DeleteBucketGlobalAlias`** - Delete a global alias
   - Removes a global alias from a bucket
-  - The bucket itself remains unaffected
+  - Uses DELETE method with query parameters
 
 #### 5. Permission Management API
 
-- **`POST /v1/bucket/allow`** - Grant bucket permissions
+- **`POST /v2/AllowBucketKey`** - Grant bucket permissions
 
   - Assigns bucket operation permissions to an access key
   - Supports Read, Write, and Owner permissions
 
-- **`POST /v1/bucket/deny`** - Revoke bucket permissions
+- **`POST /v2/DenyBucketKey`** - Revoke bucket permissions
   - Removes an access key's permissions for a bucket
   - Flexible permission control mechanism
 
 #### 6. Access Key Management API
 
-- **`GET /v1/key?list`** - List all access keys
+- **`GET /v2/ListKeys`** - List all access keys
 
   - Gets all API keys in the cluster
   - Displays basic key information
 
-- **`POST /v1/key`** - Create a new access key
+- **`POST /v2/CreateKey`** - Create a new access key
 
   - Generates a new S3-compatible access key
   - Sets initial permissions for the key
 
-- **`POST /v1/key/import`** - Import an existing access key
+- **`POST /v2/ImportKey`** - Import an existing access key
 
   - Used for migrating or restoring access keys
   - Imports externally generated keys
 
-- **`DELETE /v1/key?id={id}`** - Delete an access key
+- **`DELETE /v2/DeleteKey`** - Delete an access key
   - Removes an access key from the cluster
-  - Immediately revokes all related permissions
+  - Uses DELETE method with query parameters (may differ from official POST specification)
 
-### ## API Version Comparison Analysis
+### 🔧 Custom Backend Endpoints
 
-### 📊 API Differences: Current Project vs. Official Documentation
+The Garage Web UI implements several custom backend endpoints that extend functionality beyond the standard Garage Admin API:
 
-A comparative analysis reveals that the current project uses **Garage Admin API v1**, while the latest official documentation recommends using **API v2**. Below is a detailed comparison of the differences:
+#### 1. Configuration Management
 
-#### 🔄 Version Mapping
+- **`GET /config`** - Get garage configuration
+  - Retrieves garage configuration for frontend display
+  - Provides S3 endpoint URLs, region information, etc.
 
-| Feature Category         | Current Project (v1)            | Official Recommendation (v2)                          | Status      |
-| ---------------- | ------------------------ | -------------------------------------- | --------- |
-| **Cluster Health Status** | `GET /v1/health`         | `GET /v2/GetClusterHealth`             | ⚠️ Upgrade Needed |
-| **Cluster Status**     | `GET /v1/status`         | `GET /v2/GetClusterStatus`             | ⚠️ Upgrade Needed |
-| **Cluster Statistics**     | ❌ Not Used                | `GET /v2/GetClusterStatistics`         | 🆕 New Feature |
-| **Connect Nodes**     | `POST /v1/connect`       | `POST /v2/ConnectClusterNodes`         | ⚠️ Upgrade Needed |
-| **Get Layout**     | `GET /v1/layout`         | `GET /v2/GetClusterLayout`             | ⚠️ Upgrade Needed |
-| **Update Layout**     | `POST /v1/layout`        | `POST /v2/UpdateClusterLayout`         | ⚠️ Upgrade Needed |
-| **Apply Layout**     | `POST /v1/layout/apply`  | `POST /v2/ApplyClusterLayout`          | ⚠️ Upgrade Needed |
-| **Revert Layout**     | `POST /v1/layout/revert` | `POST /v2/RevertClusterLayout`         | ⚠️ Upgrade Needed |
-| **Layout History**     | ❌ Not Used                | `GET /v2/GetClusterLayoutHistory`      | 🆕 New Feature |
-| **Preview Layout Changes** | ❌ Not Used                | `POST /v2/PreviewClusterLayoutChanges` | 🆕 New Feature |
+#### 2. Authentication System
 
-#### 📦 Bucket Management API Comparison
+- **`POST /auth/login`** - User authentication
+  - Handles user login with username/password
+  - Creates authenticated sessions
 
-| Feature           | Current Project (v1)                    | Official Recommendation (v2)                       | Difference Explanation            |
-| -------------- | -------------------------------- | ----------------------------------- | ------------------- |
-| **List Buckets** | `GET /v1/bucket?list`            | `GET /v2/ListBuckets`               | Parameter format differs        |
-| **Get Bucket Info** | `GET /v1/bucket?id={id}`         | `GET /v2/GetBucketInfo`             | Supports more query methods    |
-| **Create Bucket** | `POST /v1/bucket`                | `POST /v2/CreateBucket`             | v2 supports more configuration options |
-| **Update Bucket** | `PUT /v1/bucket?id={id}`         | `POST /v2/UpdateBucket/{id}`        | HTTP method and path differ |
-| **Delete Bucket** | `DELETE /v1/bucket?id={id}`      | `POST /v2/DeleteBucket/{id}`        | HTTP method differs       |
-| **Add Alias**   | `PUT /v1/bucket/alias/global`    | `POST /v2/AddBucketAlias`           | Supports local aliases        |
-| **Delete Alias**   | `DELETE /v1/bucket/alias/global` | `POST /v2/RemoveBucketAlias`        | Supports local aliases        |
-| **Cleanup Uploads**   | ❌ Not Used                        | `POST /v2/CleanupIncompleteUploads` | 🆕 New Feature           |
-| **Inspect Object**   | ❌ Not Used                        | `GET /v2/InspectObject`             | 🆕 New Feature           |
+- **`GET /auth/status`** - Authentication status
+  - Checks current authentication state
+  - Returns whether authentication is enabled and user status
 
-#### 🔑 Access Key Management API Comparison
+- **`POST /auth/logout`** - User logout
+  - Terminates authenticated sessions
+  - Clears session data
 
-| Feature             | Current Project (v1)            | Official Recommendation (v2)             | Difference Explanation        |
-| ---------------- | ------------------------ | ------------------------- | --------------- |
-| **List Keys**     | `GET /v1/key?list`       | `GET /v2/ListKeys`        | Parameter format differs    |
-| **Get Key Info** | ❌ Not Used                | `GET /v2/GetKeyInfo`      | 🆕 New Feature       |
-| **Create Key**     | `POST /v1/key`           | `POST /v2/CreateKey`      | v2 supports more options |
-| **Update Key**     | ❌ Not Used                | `POST /v2/UpdateKey/{id}` | 🆕 New Feature       |
-| **Delete Key**     | `DELETE /v1/key?id={id}` | `POST /v2/DeleteKey/{id}` | HTTP method differs   |
-| **Import Key**     | `POST /v1/key/import`    | `POST /v2/ImportKey`      | Path structure differs    |
-| **Grant Permission**     | `POST /v1/bucket/allow`  | `POST /v2/AllowBucketKey` | Path structure differs    |
-| **Revoke Permission**     | `POST /v1/bucket/deny`   | `POST /v2/DenyBucketKey`  | Path structure differs    |
+#### 3. Enhanced Bucket Operations
 
-### 🚫 v2-Exclusive Features (Not Used in the Current Project)
+- **`GET /buckets`** - Enhanced bucket listing
+  - Provides enriched bucket information by combining `/v2/ListBuckets` and `/v2/GetBucketInfo`
+  - Includes detailed statistics and metadata for all buckets
+
+#### 4. Object Browser & File Management
+
+- **`GET /browse/{bucket}`** - Browse bucket objects
+  - Lists objects and folders in a bucket with S3 ListObjectsV2
+  - Supports pagination and prefix filtering
+  - Provides object metadata and download URLs
+
+- **`GET /browse/{bucket}/{key...}`** - Get/view object
+  - Retrieves object content for viewing or downloading
+  - Supports thumbnail generation for images
+  - Provides object metadata via HeadObject
+
+- **`PUT /browse/{bucket}/{key...}`** - Upload object
+  - Handles file uploads with multipart form data
+  - Supports directory creation
+  - Uses S3 PutObject for storage
+
+- **`DELETE /browse/{bucket}/{key...}`** - Delete object/folder
+  - Deletes individual objects or entire folders recursively
+  - Supports bulk deletion for folders
+  - Uses S3 DeleteObject/DeleteObjects
+
+### 📊 Current Feature Coverage Analysis
+
+| Feature Category       | v2 Total Features | Currently Implemented | Custom Extensions | Total Coverage |
+| ---------------------- | ----------------- | -------------------- | ---------------- | -------------- |
+| **Cluster Management** | 6                 | 2                    | 1 (config)       | 50%            |
+| **Layout Management**  | 7                 | 5                    | 0                | 71%            |
+| **Bucket Management**  | 9                 | 5                    | 2 (enhanced list, browse) | 78% |
+| **Permission Management** | 2              | 2                    | 0                | 100%           |
+| **Key Management**     | 6                 | 4                    | 0                | 67%            |
+| **Authentication**     | 0                 | 0                    | 3 (login system) | 100% (custom)  |
+| **File Management**    | 0                 | 0                    | 4 (object browser) | 100% (custom) |
+| **Advanced Features**  | 25+               | 0                    | 0                | 0%             |
+| **Overall**            | 55+               | 18                   | 10               | 51%            |
+
+**Enhanced Coverage**: With custom backend endpoints, the project achieves 51% total feature coverage, providing comprehensive cluster management, authentication, and file browsing capabilities.
+
+### 🚀 Available v2 Features Not Yet Implemented
+
+The project can further enhance functionality by implementing these additional v2 API features:
 
 #### 1. Admin Token Management
-
 - `GET /v2/ListAdminTokens` - List all admin tokens
 - `GET /v2/GetAdminTokenInfo` - Get token information
 - `GET /v2/GetCurrentAdminTokenInfo` - Get current token information
@@ -535,113 +542,48 @@ A comparative analysis reveals that the current project uses **Garage Admin API 
 - `POST /v2/UpdateAdminToken/{id}` - Update an admin token
 - `POST /v2/DeleteAdminToken/{id}` - Delete an admin token
 
-#### 2. Node Management
-
+#### 2. Enhanced Node Management
 - `GET /v2/GetNodeInfo/{node}` - Get node information
 - `GET /v2/GetNodeStatistics/{node}` - Get node statistics
 - `POST /v2/CreateMetadataSnapshot/{node}` - Create a metadata snapshot
 - `POST /v2/LaunchRepairOperation/{node}` - Launch a repair operation
 
 #### 3. Worker Process Management
-
 - `POST /v2/ListWorkers/{node}` - List worker processes
 - `POST /v2/GetWorkerInfo/{node}` - Get worker process information
 - `POST /v2/GetWorkerVariable/{node}` - Get a worker process variable
 - `POST /v2/SetWorkerVariable/{node}` - Set a worker process variable
 
-#### 4. Block Management
-
+#### 4. Advanced Block Management
 - `POST /v2/GetBlockInfo/{node}` - Get block information
 - `GET /v2/ListBlockErrors/{node}` - List block errors
 - `POST /v2/RetryBlockResync/{node}` - Retry a block resync
 - `POST /v2/PurgeBlocks/{node}` - Purge blocks
 
-#### 5. Special Endpoints
+#### 5. Enhanced Bucket Features
+- `POST /v2/CleanupIncompleteUploads` - Cleanup incomplete uploads
+- `GET /v2/InspectObject` - Inspect object details
+- `GET /v2/GetClusterStatistics` - Get cluster-level statistics
+- `POST /v2/PreviewClusterLayoutChanges` - Preview layout changes
+- `GET /v2/GetClusterLayoutHistory` - Get layout history
 
-- `GET /health` - Quick health check (no authentication required)
-- `GET /metrics` - Prometheus metrics
-- `GET /check` - On-demand TLS check
+### 🎯 Future Development Roadmap
 
-### ⚡ Upgrade Impact Analysis
+#### 📅 Short-Term (1-2 months)
+1. **Enhanced Monitoring**: Implement cluster statistics and node information display
+2. **Layout Improvements**: Add layout history viewing and change preview functionality
+3. **Object Management**: Add object inspection and incomplete upload cleanup
 
-#### 🔴 Key Differences
+#### 📅 Medium-Term (3-6 months)
+1. **Admin Token Management**: Full admin token lifecycle management interface
+2. **Advanced Monitoring**: Worker process monitoring and detailed node statistics
+3. **Maintenance Tools**: Automated repair operations and block management
 
-1. **API Path Structure**
+#### 📅 Long-Term (6+ months)
+1. **Complete API Coverage**: Implement all available v2 API endpoints
+2. **Advanced Bulk Operations**: Comprehensive bulk management features
+3. **Real-time Integration**: WebSocket support for live updates and monitoring
 
-   - v1: Uses query parameters (`?id=xxx`)
-   - v2: Uses RESTful paths (`/{id}`)
+**Current Status**: The Garage Web UI successfully uses Garage Admin API v2 with 18 standard endpoints plus 10 custom backend endpoints, achieving 51% feature coverage. The project provides a comprehensive management interface with cluster administration, authentication, file browsing, and enhanced bucket management capabilities, serving as a robust web-based alternative to command-line tools.
 
-2. **HTTP Methods**
-
-   - v1: Uses a mix of GET/POST/PUT/DELETE
-   - v2: Primarily uses GET/POST
-
-3. **Request/Response Format**
-
-   - v2 provides a more structured data format
-   - More detailed error messages and status codes
-
-4. **Feature Completeness**
-   - v2 offers more advanced management features
-   - Better monitoring and maintenance capabilities
-
-#### 🟡 Compatibility Considerations
-
-- **Backward Compatibility**: The v1 API is still available in the current version (marked as deprecated)
-- **Migration Recommendation**: Gradually migrate to the v2 API
-- **Feature Enhancement**: Utilize new v2 features to improve user experience
-
-### 📋 Upgrade Recommendations
-
-#### 🎯 Short-Term Plan (1-2 months)
-
-1. **API Version Upgrade**
-
-   - Upgrade core API calls from v1 to v2
-   - Update the frontend API client
-   - Test for compatibility and functional consistency
-
-2. **Basic Feature Enhancements**
-   - Add cluster statistics functionality
-   - Implement layout history viewing
-   - Support layout change previews
-
-#### 🚀 Medium-Term Plan (3-6 months)
-
-1. **New Feature Integration**
-
-   - Admin token management interface
-   - Detailed node information and statistics
-   - Object inspection and analysis functionality
-
-2. **Monitoring Enhancements**
-   - Integrate Prometheus metrics display
-   - Real-time health status monitoring
-   - Error and alerting system
-
-#### 🎨 Long-Term Plan (6+ months)
-
-1. **Advanced Management Features**
-
-   - Block management and repair tools
-   - Worker process monitoring
-   - Automated maintenance tasks
-
-2. **User Experience Optimization**
-   - Bulk operations support
-   - Real-time data updates
-   - Improved mobile adaptation
-
-### 📊 Feature Coverage Analysis
-
-| Feature Category       | v1 Available Features | v2 Total Features | Currently Used | Coverage |
-| -------------- | ----------- | --------- | -------- | ------ |
-| **Cluster Management**   | 4           | 6         | 2        | 33%    |
-| **Layout Management**   | 5           | 7         | 5        | 71%    |
-| **Bucket Management** | 7           | 9         | 5        | 56%    |
-| **Permission Management**   | 2           | 2         | 2        | 100%   |
-| **Key Management**   | 4           | 6         | 4        | 67%    |
-| **Advanced Features**   | 0           | 25+       | 0        | 0%     |
-| **Overall**       | 22          | 55+       | 18       | 33%    |
-
-**Conclusion**: The current project uses only about 33% of the Garage Admin API's features, leaving significant room for functional expansion.
+**Implementation Philosophy**: The project prioritizes REST API compliance and user experience, which may result in HTTP method choices that differ from the official specification while maintaining full functional compatibility.
