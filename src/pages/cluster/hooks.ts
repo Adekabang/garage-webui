@@ -43,7 +43,7 @@ export const useConnectNode = (options?: Partial<UseMutationOptions<ConnectNodeR
 
 export const useAssignNode = (options?: Partial<UseMutationOptions<void, Error, AssignNodeBody>>) => {
   return useMutation<void, Error, AssignNodeBody>({
-    mutationFn: (data) => api.post("/v2/AddClusterLayout", { body: [data] }),
+    mutationFn: (data) => api.post("/v2/UpdateClusterLayout", { body: { parameters: data.parameters, roles: data.roles } }),
     ...options,
   });
 };
@@ -51,7 +51,7 @@ export const useAssignNode = (options?: Partial<UseMutationOptions<void, Error, 
 export const useUnassignNode = (options?: Partial<UseMutationOptions<void, Error, string>>) => {
   return useMutation<void, Error, string>({
     mutationFn: (nodeId) =>
-      api.post("/v2/AddClusterLayout", { body: [{ id: nodeId, remove: true }] }),
+      api.post("/v2/UpdateClusterLayout", { body: { parameters: null, roles: [{ id: nodeId, remove: true }] } }),
     ...options,
   });
 };

@@ -23,6 +23,8 @@ const defaultValues: AssignNodeSchema = {
   capacityUnit: "GB",
   isGateway: false,
   tags: [],
+  zoneRedundancyType: "atLeast",
+  zoneRedundancyAtLeast: 1,
 };
 
 const AssignNodeDialog = () => {
@@ -36,6 +38,10 @@ const AssignNodeDialog = () => {
     defaultValues,
   });
   const isGateway = useWatch({ control: form.control, name: "isGateway" });
+  const zoneRedundancyType = useWatch({
+    control: form.control,
+    name: "zoneRedundancyType",
+  });
 
   const assignNode = useAssignNode({
     onSuccess() {
@@ -106,10 +112,20 @@ const AssignNodeDialog = () => {
       ? calculateCapacity(values.capacity, values.capacityUnit)
       : null;
     const data = {
-      id: values.nodeId,
-      zone: values.zone,
-      capacity,
-      tags: values.tags,
+      parameters: {
+        zoneRedundancy:
+          values.zoneRedundancyType === "maximum"
+            ? ("maximum" as const)
+            : { atLeast: Number(values.zoneRedundancyAtLeast) },
+      },
+      roles: [
+        {
+          id: values.nodeId,
+          zone: values.zone,
+          capacity,
+          tags: values.tags,
+        },
+      ],
     };
     assignNode.mutate(data);
   });
@@ -214,9 +230,9 @@ const AssignNodeDialog = () => {
                 value={
                   field.value
                     ? (field.value as string[]).map((value) => ({
-                        label: value,
-                        value,
-                      }))
+                      label: value,
+                      value,
+                    }))
                     : null
                 }
                 options={tagsList}
@@ -228,6 +244,39 @@ const AssignNodeDialog = () => {
               />
             )}
           />
+
+          <FormControl
+            form={form}
+            name="zoneRedundancyType"
+            title="Zone Redundancy"
+            render={(field) => (
+              <Select
+                name={field.name}
+                value={String(field.value || "")}
+                onChange={field.onChange}
+              >
+                <option value="atLeast">At Least</option>
+                <option value="maximum">Maximum</option>
+              </Select>
+            )}
+          />
+
+          {zoneRedundancyType === "atLeast" && (
+            <FormControl
+              form={form}
+              name="zoneRedundancyAtLeast"
+              title="Minimum Zones"
+              className="mt-2"
+              render={(field) => (
+                <Input
+                  type="number"
+                  name={field.name}
+                  value={String(field.value || "")}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+          )}
         </Modal.Body>
         <Modal.Actions>
           <Button type="button" onClick={assignNodeDialog.close}>
