@@ -181,7 +181,7 @@ This project is bootstrapped using TypeScript & React for the UI, and Go for bac
 ### Setup
 
 ```sh
-git clone https://github.com/khairul169/garage-webui.git
+git clone https://github.com/Adekabang/garage-webui.git
 cd garage-webui && pnpm install
 cd backend && pnpm install && cd ..
 ```
