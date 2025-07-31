@@ -21,7 +21,7 @@ The Garage Web UI is available as a single executable binary and docker image. Y
 ### Docker CLI
 
 ```sh
-$ docker run -p 3909:3909 -v ./garage.toml:/etc/garage.toml:ro --restart unless-stopped --name garage-webui khairul169/garage-webui:latest
+docker run -p 3909:3909 -v ./garage.toml:/etc/garage.toml:ro --restart unless-stopped --name garage-webui khairul169/garage-webui:latest
 ```
 
 ### Docker Compose
@@ -62,21 +62,21 @@ services:
 Get the latest binary from the [release page](https://github.com/khairul169/garage-webui/releases/latest) according to your OS architecture. For example:
 
 ```sh
-$ wget -O garage-webui https://github.com/khairul169/garage-webui/releases/download/1.0.9/garage-webui-v1.0.9-linux-amd64
-$ chmod +x garage-webui
-$ sudo cp garage-webui /usr/local/bin
+wget -O garage-webui https://github.com/khairul169/garage-webui/releases/download/1.0.9/garage-webui-v1.0.9-linux-amd64
+chmod +x garage-webui
+sudo cp garage-webui /usr/local/bin
 ```
 
 Run the program with specified `garage.toml` config path.
 
 ```sh
-$ CONFIG_PATH=./garage.toml garage-webui
+CONFIG_PATH=./garage.toml garage-webui
 ```
 
 If you want to run the program at startup, you may want to create a systemd service.
 
 ```sh
-$ sudo nano /etc/systemd/system/garage-webui.service
+sudo nano /etc/systemd/system/garage-webui.service
 ```
 
 ```
@@ -97,8 +97,8 @@ WantedBy=default.target
 Then reload and start the garage-webui service.
 
 ```sh
-$ sudo systemctl daemon-reload
-$ sudo systemctl enable --now garage-webui
+sudo systemctl daemon-reload
+sudo systemctl enable --now garage-webui
 ```
 
 ### Configuration
@@ -181,9 +181,9 @@ This project is bootstrapped using TypeScript & React for the UI, and Go for bac
 ### Setup
 
 ```sh
-$ git clone https://github.com/khairul169/garage-webui.git
-$ cd garage-webui && pnpm install
-$ cd backend && pnpm install && cd ..
+git clone https://github.com/khairul169/garage-webui.git
+cd garage-webui && pnpm install
+cd backend && pnpm install && cd ..
 ```
 
 ### Development with Docker
@@ -192,29 +192,29 @@ For development with Docker, a `docker-compose.dev.yml` file is provided with 4 
 
 ```sh
 # Create necessary directories for Garage data
-$ mkdir -p dev.local/data-garage/meta dev.local/data-garage/data
-$ mkdir -p dev.local/data-garage2/meta dev.local/data-garage2/data
-$ mkdir -p dev.local/data-garage3/meta dev.local/data-garage3/data
-$ mkdir -p dev.local/data-garage4/meta dev.local/data-garage4/data
+mkdir -p dev.local/data-garage/meta dev.local/data-garage/data
+mkdir -p dev.local/data-garage2/meta dev.local/data-garage2/data
+mkdir -p dev.local/data-garage3/meta dev.local/data-garage3/data
+mkdir -p dev.local/data-garage4/meta dev.local/data-garage4/data
 
 # Copy the template configuration files and replace CONTAINER_NAME with the actual container name
-$ cp garage.toml.template dev.local/garage.toml && sed -i 's/CONTAINER_NAME/garage/g' dev.local/garage.toml
-$ cp garage.toml.template dev.local/garage2.toml && sed -i 's/CONTAINER_NAME/garage2/g' dev.local/garage2.toml
-$ cp garage.toml.template dev.local/garage3.toml && sed -i 's/CONTAINER_NAME/garage3/g' dev.local/garage3.toml
-$ cp garage.toml.template dev.local/garage4.toml && sed -i 's/CONTAINER_NAME/garage4/g' dev.local/garage4.toml
+cp garage.toml.template dev.local/garage.toml && sed -i 's/CONTAINER_NAME/garage/g' dev.local/garage.toml
+cp garage.toml.template dev.local/garage2.toml && sed -i 's/CONTAINER_NAME/garage2/g' dev.local/garage2.toml
+cp garage.toml.template dev.local/garage3.toml && sed -i 's/CONTAINER_NAME/garage3/g' dev.local/garage3.toml
+cp garage.toml.template dev.local/garage4.toml && sed -i 's/CONTAINER_NAME/garage4/g' dev.local/garage4.toml
 
 # Setup environment variables
-$ cp .env.example .env
-$ cp backend/.env.example backend/.env
+cp .env.example .env
+cp backend/.env.example backend/.env
 
 # Start the Garage containers
-$ docker-compose -f docker-compose.dev.yml up -d
+docker-compose -f docker-compose.dev.yml up -d
 ```
 
 You can then run the web UI with the environment variables from your .env files:
 
 ```sh
-$ pnpm run dev
+pnpm run dev
 ```
 
 ### Running
@@ -222,15 +222,15 @@ $ pnpm run dev
 Start both the client and server concurrently:
 
 ```sh
-$ pnpm run dev # or npm run dev
+pnpm run dev # or npm run dev
 ```
 
 Or start each instance separately:
 
 ```sh
-$ pnpm run dev:client
-$ cd backend
-$ pnpm run dev:server
+pnpm run dev:client
+cd backend
+pnpm run dev:server
 ```
 
 ## Troubleshooting
