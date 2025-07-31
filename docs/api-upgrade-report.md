@@ -2,15 +2,17 @@
 
 ## Upgrade Overview
 
-The Garage Web UI project has been successfully upgraded from Garage Admin API v1 to v2.
+The Garage Web UI project has been successfully upgraded from Garage Admin API v1 to v2, with all linting issues resolved and API endpoints aligned with the official specification.
 
-**⚠️ Implementation Note**: This project uses REST-compliant HTTP methods (DELETE for deletions) which may differ from the official Garage Admin API v2 specification. For the authoritative API specification, please refer to [https://garagehq.deuxfleurs.fr/api/garage-admin-v2.html](https://garagehq.deuxfleurs.fr/api/garage-admin-v2.html).
+**⚠️ Implementation Note**: This project now fully aligns with the official Garage Admin API v2 specification. For the authoritative API specification, please refer to [https://garagehq.deuxfleurs.fr/api/garage-admin-v2.html](https://garagehq.deuxfleurs.fr/api/garage-admin-v2.html).
 
 ## Upgrade Timeline
 
 - **Completion Date**: July 2025
 - **Current Version**: v1.0.9
 - **Scope of Upgrade**: All API calls within the frontend React hooks
+- **Code Quality**: All ESLint errors and warnings resolved
+- **API Alignment**: Fully aligned with official Garage Admin API v2 specification
 
 ## Upgrade Details
 
@@ -138,9 +140,13 @@ In addition to the standard Garage Admin API v2 endpoints, the Garage Web UI imp
 
 ✅ **Code Quality**:
 
-- ESLint warnings have been addressed.
-- Type definitions have been optimized.
-- All hooks properly typed with TypeScript interfaces.
+- All ESLint errors and warnings have been resolved.
+- Type definitions have been optimized (removed all `any` types).
+- All React hooks follow proper dependency rules.
+- Form controls are properly managed (controlled vs uncontrolled).
+- All components have proper TypeScript interfaces.
+- React component keys are properly assigned for list items.
+- Input fields have appropriate `readOnly` props where needed.
 
 ## New Feature Availability
 
@@ -163,6 +169,43 @@ After upgrading to the v2 API, the project now utilizes the following enhanced f
 - Richer bucket metadata from `/v2/GetBucketInfo`
 - Improved alias management with `/v2/AddBucketAlias` and `/v2/RemoveBucketAlias`
 - Finer-grained permission control through updated permission APIs
+
+## Recent Improvements & Fixes
+
+### ✅ **API Endpoint Corrections (July 2025)**
+
+1. **Bucket Alias Operations**:
+   - Fixed `AddBucketAlias`: Now uses correct endpoint `/v2/AddBucketAlias` with POST method
+   - Fixed `RemoveBucketAlias`: Now uses correct endpoint `/v2/RemoveBucketAlias` with POST method
+   - Updated request format to use `{ bucketId, globalAlias }` in request body
+
+2. **Delete Operations**:
+   - Fixed `DeleteKey`: Now uses `POST /v2/DeleteKey?id={id}` (aligned with official spec)
+   - Fixed `DeleteBucket`: Now uses `POST /v2/DeleteBucket?id={id}` (aligned with official spec)
+
+### ✅ **Code Quality Improvements (July 2025)**
+
+1. **TypeScript & ESLint Fixes**:
+   - Removed all `any` types in favor of proper TypeScript interfaces
+   - Fixed all React Hook dependency warnings
+   - Resolved controlled vs uncontrolled input warnings
+   - Added proper `key` props to list items
+   - Added `readOnly` props to display-only input fields
+
+2. **Component Fixes**:
+   - **Chips Component**: Fixed TypeScript prop spreading
+   - **Select Component**: Improved ref handling
+   - **Disclosure Hooks**: Enhanced type safety
+   - **Page Context**: Fixed infinite loop issues with proper memoization
+   - **Main Layout**: Fixed sidebar toggle on mobile devices
+   - **ShareDialog**: Added `readOnly` prop to URL input field
+   - **Permissions Tab**: Added proper keys and readOnly checkboxes
+   - **Create Key Dialog**: Fixed uncontrolled to controlled input warnings
+
+3. **Mobile & UX Improvements**:
+   - Fixed sidebar functionality on mobile devices
+   - Resolved burger menu toggle issues
+   - Improved form validation and error handling
 
 ## Production Status
 

@@ -347,13 +347,9 @@ pnpm run dev
    - Follow the principle of least privilege
    - Use a dedicated administrator token
 
-## Garage Admin API Usage
+## API Features Currently Used by the Project
 
-### 🔌 API Features Currently Used by the Project
-
-The current Garage Web UI project utilizes **Garage Admin API v2** features along with custom backend endpoints for enhanced functionality:
-
-**⚠️ Implementation Note**: This project may use different HTTP methods than the official Garage Admin API v2 specification for better REST compliance. The implementation documented here reflects the actual working code in production. For the official API specification, refer to [https://garagehq.deuxfleurs.fr/api/garage-admin-v2.html](https://garagehq.deuxfleurs.fr/api/garage-admin-v2.html).
+**✅ Full API Compliance**: As of July 2025, all API implementations are fully aligned with the official [Garage Admin API v2 specification](https://garagehq.deuxfleurs.fr/api/garage-admin-v2.html). All HTTP methods, request formats, and response handling match the official documentation exactly.
 
 #### 1. Cluster Management API
 
@@ -415,20 +411,21 @@ The current Garage Web UI project utilizes **Garage Admin API v2** features alon
   - Modifies the bucket's website configuration
   - Sets or updates quota limits
 
-- **`DELETE /v2/DeleteBucket`** - Delete a bucket
-  - Deletes an empty bucket (uses DELETE method with query parameters)
-  - Implementation may differ from official POST specification for better REST compliance
+- **`POST /v2/DeleteBucket?id={id}`** - Delete bucket
+  - **Implementation**: POST with query parameter (aligned with official specification)
+  - **Parameters**: Bucket ID in query parameter
+  - **Usage**: Remove buckets from cluster
 
 #### 4. Bucket Alias Management API
 
 - **`POST /v2/AddBucketAlias`** - Add a global alias
-  - **Method**: POST (aligned with official specification)
-  - **Parameters**: Bucket ID and alias name in request body (`bucketId`, `globalAlias`)
+  - **Implementation**: POST with JSON body (aligned with official specification)
+  - **Parameters**: Bucket ID and alias name in request body (`{ bucketId, globalAlias }`)
   - **Usage**: Add new bucket aliases
 
-- **`POST /v2/RemoveBucketAlias`** - Delete a global alias  
-  - **Method**: POST (aligned with official specification)
-  - **Parameters**: Bucket ID and alias name in request body (`bucketId`, `globalAlias`)
+- **`POST /v2/RemoveBucketAlias`** - Remove a global alias  
+  - **Implementation**: POST with JSON body (aligned with official specification)
+  - **Parameters**: Bucket ID and alias name in request body (`{ bucketId, globalAlias }`)
   - **Usage**: Remove existing bucket aliases
 
 #### 5. Permission Management API
@@ -459,9 +456,10 @@ The current Garage Web UI project utilizes **Garage Admin API v2** features alon
   - Used for migrating or restoring access keys
   - Imports externally generated keys
 
-- **`DELETE /v2/DeleteKey`** - Delete an access key
-  - Removes an access key from the cluster
-  - Uses DELETE method with query parameters (may differ from official POST specification)
+- **`POST /v2/DeleteKey?id={id}`** - Delete access key  
+  - **Implementation**: POST with query parameter (aligned with official specification)
+  - **Parameters**: Key ID in query parameter
+  - **Usage**: Remove access keys from cluster
 
 ### 🔧 Custom Backend Endpoints
 
