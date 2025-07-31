@@ -32,7 +32,7 @@ export const useRemoveKey = (
   options?: UseMutationOptions<unknown, Error, string>
 ) => {
   return useMutation({
-    mutationFn: (id) => api.delete("/v2/DeleteKey", { params: { id } }),
+    mutationFn: (id) => api.post("/v2/DeleteKey", { params: { id } }),
     ...options,
   });
 };

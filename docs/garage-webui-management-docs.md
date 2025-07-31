@@ -421,14 +421,15 @@ The current Garage Web UI project utilizes **Garage Admin API v2** features alon
 
 #### 4. Bucket Alias Management API
 
-- **`PUT /v2/PutBucketGlobalAlias`** - Add a global alias
+- **`POST /v2/AddBucketAlias`** - Add a global alias
+  - **Method**: POST (aligned with official specification)
+  - **Parameters**: Bucket ID and alias name in request body (`bucketId`, `globalAlias`)
+  - **Usage**: Add new bucket aliases
 
-  - Creates a global access alias for a bucket
-  - Supports multiple aliases pointing to the same bucket
-
-- **`DELETE /v2/DeleteBucketGlobalAlias`** - Delete a global alias
-  - Removes a global alias from a bucket
-  - Uses DELETE method with query parameters
+- **`POST /v2/RemoveBucketAlias`** - Delete a global alias  
+  - **Method**: POST (aligned with official specification)
+  - **Parameters**: Bucket ID and alias name in request body (`bucketId`, `globalAlias`)
+  - **Usage**: Remove existing bucket aliases
 
 #### 5. Permission Management API
 

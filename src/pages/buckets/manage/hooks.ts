@@ -32,8 +32,8 @@ export const useAddAlias = (
 ) => {
   return useMutation({
     mutationFn: (alias: string) => {
-      return api.put("/v2/PutBucketGlobalAlias", {
-        params: { id: bucketId, alias },
+      return api.post("/v2/AddBucketAlias", {
+        body: { bucketId, globalAlias: alias },
       });
     },
     ...options,
@@ -46,8 +46,8 @@ export const useRemoveAlias = (
 ) => {
   return useMutation({
     mutationFn: (alias: string) => {
-      return api.delete("/v2/DeleteBucketGlobalAlias", {
-        params: { id: bucketId, alias },
+      return api.post("/v2/RemoveBucketAlias", {
+        body: { bucketId, globalAlias: alias },
       });
     },
     ...options,
@@ -65,7 +65,6 @@ export const useAllowKey = (
   return useMutation({
     mutationFn: async (payload) => {
       const promises = payload.map(async (key) => {
-        console.log("test", key);
         return api.post("/v2/AllowBucketKey", {
           body: {
             bucketId,
@@ -107,7 +106,7 @@ export const useRemoveBucket = (
   options?: MutationOptions<unknown, Error, string>
 ) => {
   return useMutation({
-    mutationFn: (id) => api.delete("/v2/DeleteBucket", { params: { id } }),
+    mutationFn: (id) => api.post("/v2/DeleteBucket", { params: { id } }),
     ...options,
   });
 };

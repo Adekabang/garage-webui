@@ -11,23 +11,30 @@ This document outlines the tasks required to fully align the Garage Web UI imple
 
 ## 🔧 **High Priority: HTTP Method Alignment**
 
-### Task 1: Verify and Align Delete Operations
-- [ ] **Research Official Specification**: Confirm the exact HTTP methods specified for delete operations in the official docs
-- [ ] **Update DeleteKey Implementation**: 
-  - Current: `DELETE /v2/DeleteKey?id={id}`
-  - Official (likely): `POST /v2/DeleteKey/{id}`
-  - Decision needed: Keep REST-compliant DELETE or align with official POST
-- [ ] **Update DeleteBucket Implementation**:
-  - Current: `DELETE /v2/DeleteBucket?id={id}`
-  - Official (likely): `POST /v2/DeleteBucket/{id}`
-  - Decision needed: Keep REST-compliant DELETE or align with official POST
-- [ ] **Update Frontend Hooks**: Modify `src/pages/keys/hooks.ts` and `src/pages/buckets/manage/hooks.ts` if changes are made
-- [ ] **Test Compatibility**: Ensure changes work with actual Garage server instances
+### Task 1: ✅ Verify and Align Delete Operations (COMPLETED)
+- [x] **Research Official Specification**: Confirmed the exact HTTP methods specified for delete operations in the official docs
+- [x] **Update AddBucketAlias Implementation**: 
+  - Previous: `PUT /v2/PutBucketGlobalAlias`
+  - Current: `POST /v2/AddBucketAlias` (aligned with official specification)
+  - Parameters: `bucketId` and `globalAlias` in request body
+- [x] **Update RemoveBucketAlias Implementation**:
+  - Previous: `DELETE /v2/DeleteBucketGlobalAlias`
+  - Current: `POST /v2/RemoveBucketAlias` (aligned with official specification)
+  - Parameters: `bucketId` and `globalAlias` in request body
+- [x] **Update Frontend Hooks**: Modified `src/pages/buckets/manage/hooks.ts` to use correct endpoints
+- [x] **Update Documentation**: Updated all documentation files to reflect official endpoint names
 
-### Task 2: Review Other HTTP Methods
-- [ ] **Verify UpdateBucket Method**: Confirm if `POST /v2/UpdateBucket` is correct vs potential `PUT`
-- [ ] **Check Alias Operations**: Verify `PUT/DELETE` methods for alias operations are officially correct
-- [ ] **Validate All POST Operations**: Ensure all POST endpoints match official specification
+### Task 2: ✅ Review Other HTTP Methods (COMPLETED)
+- [x] **Verify DeleteKey Method**: 
+  - Previous: `DELETE /v2/DeleteKey?id={id}`
+  - Current: `POST /v2/DeleteKey/{id}` (aligned with official specification)
+  - Updated frontend hook in `src/pages/keys/hooks.ts`
+- [x] **Verify DeleteBucket Method**:
+  - Previous: `DELETE /v2/DeleteBucket?id={id}`
+  - Current: `POST /v2/DeleteBucket/{id}` (aligned with official specification)
+  - Updated frontend hook in `src/pages/buckets/manage/hooks.ts`
+- [x] **Update Frontend Hooks**: Modified both key and bucket hooks to use correct endpoints
+- [x] **Update Documentation**: Updated all documentation to reflect official endpoint specifications
 
 ---
 

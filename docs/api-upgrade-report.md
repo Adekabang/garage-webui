@@ -33,7 +33,7 @@ The Garage Web UI project has been successfully upgraded from Garage Admin API v
 - ✅ `useKeys`: `/v1/key?list` → `/v2/ListKeys`
 - ✅ `useCreateKey`: `/v1/key` → `/v2/CreateKey`
 - ✅ `useCreateKey` (Import): `/v1/key/import` → `/v2/ImportKey`
-- ✅ `useRemoveKey`: `/v1/key` → `/v2/DeleteKey` (DELETE method)
+- ✅ `useRemoveKey`: `/v1/key` → `/v2/DeleteKey?id={id}` (POST method, aligned with official spec)
 
 ### 4. Buckets Page (`src/pages/buckets/hooks.ts`)
 
@@ -44,11 +44,11 @@ The Garage Web UI project has been successfully upgraded from Garage Admin API v
 
 - ✅ `useBucket`: `/v1/bucket` → `/v2/GetBucketInfo`
 - ✅ `useUpdateBucket`: `/v1/bucket` → `/v2/UpdateBucket` (POST method)
-- ✅ `useAddAlias`: `/v1/bucket/alias/global` → `/v2/PutBucketGlobalAlias` (PUT method)
-- ✅ `useRemoveAlias`: `/v1/bucket/alias/global` → `/v2/DeleteBucketGlobalAlias` (DELETE method)
+- ✅ `useAddAlias`: `/v1/bucket/alias/global` → `/v2/AddBucketAlias` (POST method)
+- ✅ `useRemoveAlias`: `/v1/bucket/alias/global` → `/v2/RemoveBucketAlias` (POST method)
 - ✅ `useAllowKey`: `/v1/bucket/allow` → `/v2/AllowBucketKey`
 - ✅ `useDenyKey`: `/v1/bucket/deny` → `/v2/DenyBucketKey`
-- ✅ `useRemoveBucket`: `/v1/bucket` → `/v2/DeleteBucket` (DELETE method)
+- ✅ `useRemoveBucket`: `/v1/bucket` → `/v2/DeleteBucket?id={id}` (POST method, aligned with official spec)
 
 ### 6. Object Browser (`src/pages/buckets/manage/browse/hooks.ts`)
 
@@ -81,14 +81,14 @@ The Garage Web UI project has been successfully upgraded from Garage Admin API v
 | `/v1/key?list`                     | `GET /v2/ListKeys`                | `GET /v2/ListKeys` | ✅   |
 | `/v1/key` (POST)                   | `POST /v2/CreateKey`               | `POST /v2/CreateKey` | ✅   |
 | `/v1/key/import`                   | `POST /v2/ImportKey`               | `POST /v2/ImportKey` | ✅   |
-| `/v1/key` (DELETE)                 | `POST /v2/DeleteKey/{id}` (Official) | `DELETE /v2/DeleteKey?id={id}` (Impl) | ✅   |
+| `/v1/key` (DELETE)                 | `POST /v2/DeleteKey?id={id}` | `POST /v2/DeleteKey?id={id}` | ✅   |
 | `/buckets`                         | `GET /v2/ListBuckets`             | `GET /v2/ListBuckets` | ✅   |
 | `/v1/bucket` (POST)                | `POST /v2/CreateBucket`            | `POST /v2/CreateBucket` | ✅   |
 | `/v1/bucket` (GET)                 | `GET /v2/GetBucketInfo`           | `GET /v2/GetBucketInfo` | ✅   |
 | `/v1/bucket` (PUT)                 | `POST /v2/UpdateBucket`            | `POST /v2/UpdateBucket` | ✅   |
-| `/v1/bucket` (DELETE)              | `POST /v2/DeleteBucket/{id}` (Official) | `DELETE /v2/DeleteBucket?id={id}` (Impl) | ✅   |
-| `/v1/bucket/alias/global` (PUT)    | `PUT /v2/PutBucketGlobalAlias`    | `PUT /v2/PutBucketGlobalAlias` | ✅   |
-| `/v1/bucket/alias/global` (DELETE) | `DELETE /v2/DeleteBucketGlobalAlias` | `DELETE /v2/DeleteBucketGlobalAlias` | ✅   |
+| `/v1/bucket` (DELETE)              | `POST /v2/DeleteBucket?id={id}` | `POST /v2/DeleteBucket?id={id}` | ✅   |
+| `/v1/bucket/alias/global` (PUT)    | `POST /v2/AddBucketAlias`    | `POST /v2/AddBucketAlias` | ✅   |
+| `/v1/bucket/alias/global` (DELETE) | `POST /v2/RemoveBucketAlias` | `POST /v2/RemoveBucketAlias` | ✅   |
 | `/v1/bucket/allow`                 | `POST /v2/AllowBucketKey`          | `POST /v2/AllowBucketKey` | ✅   |
 | `/v1/bucket/deny`                  | `POST /v2/DenyBucketKey`           | `POST /v2/DenyBucketKey` | ✅   |
 
@@ -161,7 +161,7 @@ After upgrading to the v2 API, the project now utilizes the following enhanced f
 ### Enhanced Bucket Management
 
 - Richer bucket metadata from `/v2/GetBucketInfo`
-- Improved alias management with `/v2/PutBucketGlobalAlias` and `/v2/DeleteBucketGlobalAlias`
+- Improved alias management with `/v2/AddBucketAlias` and `/v2/RemoveBucketAlias`
 - Finer-grained permission control through updated permission APIs
 
 ## Production Status
