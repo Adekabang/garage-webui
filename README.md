@@ -197,11 +197,17 @@ mkdir -p dev.local/data-garage2/meta dev.local/data-garage2/data
 mkdir -p dev.local/data-garage3/meta dev.local/data-garage3/data
 mkdir -p dev.local/data-garage4/meta dev.local/data-garage4/data
 
+# Generate a secure RPC secret using OpenSSL
+# The rpc_secret is used to secure communication between Garage nodes
+RPC_SECRET=$(openssl rand -hex 32)
+echo "Generated RPC secret: $RPC_SECRET"
+
 # Copy the template configuration files and replace CONTAINER_NAME with the actual container name
-cp garage.toml.template dev.local/garage.toml && sed -i 's/CONTAINER_NAME/garage/g' dev.local/garage.toml
-cp garage.toml.template dev.local/garage2.toml && sed -i 's/CONTAINER_NAME/garage2/g' dev.local/garage2.toml
-cp garage.toml.template dev.local/garage3.toml && sed -i 's/CONTAINER_NAME/garage3/g' dev.local/garage3.toml
-cp garage.toml.template dev.local/garage4.toml && sed -i 's/CONTAINER_NAME/garage4/g' dev.local/garage4.toml
+# Using sed with empty string after -i for macOS compatibility
+cp garage.toml.template dev.local/garage.toml && sed -i '' "s/CONTAINER_NAME/garage/g; s/dev-garage-secret/$RPC_SECRET/g" dev.local/garage.toml
+cp garage.toml.template dev.local/garage2.toml && sed -i '' "s/CONTAINER_NAME/garage2/g; s/dev-garage-secret/$RPC_SECRET/g" dev.local/garage2.toml
+cp garage.toml.template dev.local/garage3.toml && sed -i '' "s/CONTAINER_NAME/garage3/g; s/dev-garage-secret/$RPC_SECRET/g" dev.local/garage3.toml
+cp garage.toml.template dev.local/garage4.toml && sed -i '' "s/CONTAINER_NAME/garage4/g; s/dev-garage-secret/$RPC_SECRET/g" dev.local/garage4.toml
 
 # Setup environment variables
 cp .env.example .env
@@ -210,31 +216,3 @@ cp backend/.env.example backend/.env
 # Start the Garage containers
 docker-compose -f docker-compose.dev.yml up -d
 ```
-
-You can then run the web UI with the environment variables from your .env files:
-
-```sh
-pnpm run dev
-```
-
-### Running
-
-Start both the client and server concurrently:
-
-```sh
-pnpm run dev # or npm run dev
-```
-
-Or start each instance separately:
-
-```sh
-pnpm run dev:client
-cd backend
-pnpm run dev:server
-```
-
-## Troubleshooting
-
-Make sure you are using the latest version of Garage. If the data cannot be loaded, please check whether your instance of Garage has the admin API enabled and the ports are accessible.
-
-If you encounter any problems, please do not hesitate to submit an issue [here](https://github.com/khairul169/garage-webui/issues). You can describe the problem and attach the error logs.
