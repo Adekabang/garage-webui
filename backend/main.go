@@ -1,10 +1,10 @@
 package main
 
 import (
+	"Adekabang/garage-webui/router"
+	"Adekabang/garage-webui/ui"
+	"Adekabang/garage-webui/utils"
 	"fmt"
-	"khairul169/garage-webui/router"
-	"khairul169/garage-webui/ui"
-	"khairul169/garage-webui/utils"
 	"log"
 	"net/http"
 	"os"

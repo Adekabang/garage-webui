@@ -137,7 +137,7 @@ services:
       - 3903:3903 # Admin API
 
   webui:
-    image: khairul169/garage-webui:latest
+    image: adekabang/garage-webui:latest
     volumes:
       - ./garage.toml:/etc/garage.toml:ro
     ports:
@@ -154,14 +154,14 @@ docker run -p 3909:3909 \
   -v ./garage.toml:/etc/garage.toml:ro \
   -e API_BASE_URL="http://garage-host:3903" \
   -e API_ADMIN_KEY="your-admin-token" \
-  khairul169/garage-webui:latest
+  adekabang/garage-webui:latest
 ```
 
 ### 🖥️ Binary Deployment
 
 ```bash
 # Download the binary file
-wget -O garage-webui https://github.com/khairul169/garage-webui/releases/download/1.0.9/garage-webui-v1.0.9-linux-amd64
+wget -O garage-webui https://github.com/Adekabang/garage-webui/releases/download/1.0.9/garage-webui-v1.0.9-linux-amd64
 chmod +x garage-webui
 
 # Run the service
@@ -300,7 +300,7 @@ scrape_configs:
 
 ```bash
 # Clone the project
-git clone https://github.com/khairul169/garage-webui.git
+git clone https://github.com/Adekabang/garage-webui.git
 cd garage-webui
 
 # Install frontend dependencies

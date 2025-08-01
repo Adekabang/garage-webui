@@ -2,7 +2,11 @@
 
 [![image](misc/img/garage-webui.png)](misc/img/garage-webui.png)
 
-A simple admin web UI for [Garage](https://garagehq.deuxfleurs.fr/), a self-hosted, S3-compatible, distributed object storage service.
+A modern admin web UI for [Garage v2](https://garagehq.deuxfleurs.fr/), a self-hosted, S3-compatible, distributed object storage service.
+
+> **Note**: This is version 2.0.0 of Garage Web UI, designed to work with Garage v2. If you're using Garage v1, please use the [v1.x release](https://github.com/Adekabang/garage-webui/releases/tag/1.0.9) of the Web UI instead.
+
+This project is based on [khairul169/garage-webui](https://github.com/khairul169/garage-webui), the original Garage Web UI project. The v2 upgrade is maintained by Mohammad Raska ([Adekabang](https://github.com/Adekabang)).
 
 [ [Screenshots](misc/SCREENSHOTS.md) | [Install Garage](https://garagehq.deuxfleurs.fr/documentation/quick-start/) | [Garage Git](https://git.deuxfleurs.fr/Deuxfleurs/garage) ]
 
@@ -21,7 +25,7 @@ The Garage Web UI is available as a single executable binary and docker image. Y
 ### Docker CLI
 
 ```sh
-docker run -p 3909:3909 -v ./garage.toml:/etc/garage.toml:ro --restart unless-stopped --name garage-webui khairul169/garage-webui:latest
+docker run -p 3909:3909 -v ./garage.toml:/etc/garage.toml:ro --restart unless-stopped --name garage-webui adekabang/garage-webui:v2.0.0
 ```
 
 ### Docker Compose
@@ -31,7 +35,7 @@ If you install Garage using Docker, you can install this web UI alongside Garage
 ```yml
 services:
   garage:
-    image: dxflrs/garage:v1.0.1
+    image: dxflrs/garage:v2.0.0
     container_name: garage
     volumes:
       - ./garage.toml:/etc/garage.toml
@@ -45,7 +49,7 @@ services:
       - 3903:3903
 
   webui:
-    image: khairul169/garage-webui:latest
+    image: adekabang/garage-webui:v2.0.0
     container_name: garage-webui
     restart: unless-stopped
     volumes:
@@ -59,10 +63,10 @@ services:
 
 ### Without Docker
 
-Get the latest binary from the [release page](https://github.com/khairul169/garage-webui/releases/latest) according to your OS architecture. For example:
+Get the latest binary from the [release page](https://github.com/Adekabang/garage-webui/releases/latest) according to your OS architecture. For example:
 
 ```sh
-wget -O garage-webui https://github.com/khairul169/garage-webui/releases/download/1.0.9/garage-webui-v1.0.9-linux-amd64
+wget -O garage-webui https://github.com/Adekabang/garage-webui/releases/download/2.0.0/garage-webui-v2.0.0-linux-amd64
 chmod +x garage-webui
 sudo cp garage-webui /usr/local/bin
 ```
@@ -105,19 +109,18 @@ sudo systemctl enable --now garage-webui
 
 To simplify installation, the Garage Web UI uses values from the Garage configuration, such as `rpc_public_addr`, `admin.admin_token`, `s3_web.root_domain`, etc.
 
-Example content of `config.toml`:
+Example content of `garage.toml` for Garage v2:
 
 ```toml
 metadata_dir = "/var/lib/garage/meta"
 data_dir = "/var/lib/garage/data"
 db_engine = "sqlite"
-metadata_auto_snapshot_interval = "6h"
 
 replication_factor = 3
 compression_level = 2
 
 rpc_bind_addr = "[::]:3901"
-rpc_public_addr = "localhost:3901" # Required
+rpc_public_addr = "localhost:3901" # Required for Web UI
 rpc_secret = "YOUR_RPC_SECRET_HERE"
 
 [s3_api]
@@ -130,7 +133,7 @@ bind_addr = "[::]:3902"
 root_domain = ".web.domain.com"
 index = "index.html"
 
-[admin] # Required
+[admin] # Required for Web UI
 api_bind_addr = "[::]:3903"
 admin_token = "YOUR_ADMIN_TOKEN_HERE"
 metrics_token = "YOUR_METRICS_TOKEN_HERE"
@@ -188,7 +191,7 @@ cd backend && pnpm install && cd ..
 
 ### Development with Docker
 
-For development with Docker, a `docker-compose.dev.yml` file is provided with 4 Garage instances:
+For development with Docker, a `docker-compose.dev.yml` file is provided with 4 Garage v2 instances:
 
 ```sh
 # Create necessary directories for Garage data
