@@ -4,10 +4,6 @@
 
 A modern admin web UI for [Garage v2](https://garagehq.deuxfleurs.fr/), a self-hosted, S3-compatible, distributed object storage service.
 
-> **Note**: This is version 2.0.0 of Garage Web UI, designed to work with Garage v2. If you're using Garage v1, please use the [v1.x release](https://github.com/khairul169/garage-webui/releases/tag/1.0.9) of the Web UI instead.
-
-This project is based on [khairul169/garage-webui](https://github.com/khairul169/garage-webui), the original Garage Web UI project. The v2 upgrade is maintained by khairul169.
-
 [ [Screenshots](misc/SCREENSHOTS.md) | [Install Garage](https://garagehq.deuxfleurs.fr/documentation/quick-start/) | [Garage Git](https://git.deuxfleurs.fr/Deuxfleurs/garage) ]
 
 ## Features
