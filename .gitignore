@@ -27,3 +27,7 @@ dist-ssr
 !.env.example
 docker-compose.*.yml
 !docker-compose.dev.yml
+
+data/
+meta/
+garage.toml
