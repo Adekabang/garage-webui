@@ -1,4 +1,4 @@
-module khairul169/garage-webui
+module Adekabang/garage-webui
 
 go 1.23.0
 
