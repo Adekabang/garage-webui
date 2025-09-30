@@ -24,9 +24,9 @@ When a new tag is pushed, the workflow will:
 ## Docker Images
 
 The Docker images will be available at:
-- `ghcr.io/adekabang/garage-ui:latest`
-- `ghcr.io/adekabang/garage-ui:X.Y.Z` (version tag)
-- `ghcr.io/adekabang/garage-ui:X.Y` (major.minor tag)
+- `ghcr.io/khairul169/garage-webui:latest`
+- `ghcr.io/khairul169/garage-webui:X.Y.Z` (version tag)
+- `ghcr.io/khairul169/garage-webui:X.Y` (major.minor tag)
 
 ## Binaries
 
